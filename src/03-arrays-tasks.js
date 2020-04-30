@@ -35,8 +35,14 @@ function findElement(arr, value) {
  *    2 => [ 1, 3 ]
  *    5 => [ 1, 3, 5, 7, 9 ]
  */
-function generateOdds(/* len */) {
-  throw new Error('Not implemented');
+function generateOdds(len) {
+  return new Array(len * 2).fill(0, 0, len * 2).map((n, i) => {
+    let num = 0;
+    if (i % 2 !== 0) num = i;
+    // eslint-disable-next-line no-param-reassign
+    n = num;
+    return n;
+  }).filter((n) => n !== 0);
 }
 
 
@@ -233,8 +239,13 @@ function toArrayOfSquares(arr) {
  *   [ 0, 0, 0, 0, 0]         => [ 0, 0, 0, 0, 0]
  *   [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ] => [ 1, 3, 6, 10, 15, 21, 28, 36, 45, 55 ]
  */
-function getMovingSum(/* arr */) {
-  throw new Error('Not implemented');
+function getMovingSum(arr) {
+  return arr.map((_, i, a) => {
+    let num = a[0];
+    if (i > 0) num = a[i] + a[i - 1];
+    arr.splice(i, 1, num);
+    return arr;
+  })[0];
 }
 
 /**
@@ -267,8 +278,9 @@ function getSecondItems(arr) {
  *  [ 'a', 'b', 'c', null ] => [ 'a', 'b','b', 'c','c','c',  null,null,null,null ]
  *  [ 1,2,3,4,5 ] => [ 1, 2,2, 3,3,3, 4,4,4,4, 5,5,5,5,5 ]
  */
-function propagateItemsByPositionIndex(/* arr */) {
-  throw new Error('Not implemented');
+function propagateItemsByPositionIndex(arr) {
+  return arr.map((n) => [n].concat(new Array(arr.indexOf(n))))
+    .map((a) => a.fill(a[0], 0, a.length)).flat();
 }
 
 
@@ -470,8 +482,15 @@ function getIdentityMatrix(n) {
  *     0, 100 => [ 0, 1, 2, ..., 100 ]
  *     3, 3   => [ 3 ]
  */
-function getIntervalArray(/* start, end */) {
-  throw new Error('Not implemented');
+function getIntervalArray(start, end) {
+  const length = end - start;
+  const arr = new Array(length).fill(0, 0, length);
+  arr.unshift(start);
+  arr.map((n, i) => {
+    if (i > 0) arr.splice(i, 1, start + i);
+    return arr;
+  });
+  return arr;
 }
 
 /**
