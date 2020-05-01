@@ -128,8 +128,12 @@ function isTriangle(a, b, c) {
  *   { top:20, left:20, width: 20, height: 20 }    =>  false
  *
  */
-function doRectanglesOverlap(/* rect1, rect2 */) {
-  throw new Error('Not implemented');
+function doRectanglesOverlap(rect1, rect2) {
+  if (rect1.top > rect2.top + rect2.height) return false;
+  if (rect1.left > rect2.left + rect2.width) return false;
+  if (rect2.top > rect1.top + rect1.height) return false;
+  if (rect2.left > rect1.left + rect1.width) return false;
+  return true;
 }
 
 
@@ -159,8 +163,8 @@ function doRectanglesOverlap(/* rect1, rect2 */) {
  *   { center: { x:0, y:0 }, radius:10 },  { x:10, y:10 }   => false
  *
  */
-function isInsideCircle(/* circle, point */) {
-  throw new Error('Not implemented');
+function isInsideCircle(circle, point) {
+  return ((point.x - circle.center.x) ** 2 + (point.y - circle.center.y) ** 2) < circle.radius ** 2;
 }
 
 
@@ -203,8 +207,33 @@ function findFirstSingleChar(str) {
  *   5, 3, true, true   => '[3, 5]'
  *
  */
-function getIntervalString(/* a, b, isStartIncluded, isEndIncluded */) {
-  throw new Error('Not implemented');
+function getIntervalString(a, b, isStartIncluded, isEndIncluded) {
+  const openSquare = '[';
+  const closeSquare = ']';
+  const openCurve = '(';
+  const closeCurve = ')';
+  let open = '';
+  let close = '';
+  let firstNum;
+  let secondNum;
+  if (isStartIncluded) {
+    open = openSquare;
+  } else {
+    open = openCurve;
+  }
+  if (isEndIncluded) {
+    close = closeSquare;
+  } else {
+    close = closeCurve;
+  }
+  if (a > b) {
+    firstNum = b;
+    secondNum = a;
+  } else {
+    firstNum = a;
+    secondNum = b;
+  }
+  return `${open}${firstNum}, ${secondNum}${close}`;
 }
 
 
@@ -280,8 +309,14 @@ function isCreditCardNumber(/* ccn */) {
  *   10000 ( 1+0+0+0+0 = 1 ) => 1
  *   165536 (1+6+5+5+3+6 = 26,  2+6 = 8) => 8
  */
-function getDigitalRoot(/* num */) {
-  throw new Error('Not implemented');
+function getDigitalRoot(num) {
+  if (num < 10 && num >= 0) return num;
+  const numsArr = num.toString().split('').map((n) => parseInt(n, 10));
+  const summ = numsArr.reduce((sum, cur) => sum + cur, 0);
+  if (summ < 10) {
+    return summ;
+  }
+  return getDigitalRoot(summ);
 }
 
 
@@ -306,8 +341,17 @@ function getDigitalRoot(/* num */) {
  *   '{)' = false
  *   '{[(<{[]}>)]}' = true
  */
-function isBracketsBalanced(/* str */) {
-  throw new Error('Not implemented');
+function isBracketsBalanced(str) {
+  if (str === '') return true;
+  let examStr = str;
+  const cases = ['{}', '()', '[]', '<>'];
+  for (let i = 0; i < cases.length; i += 1) {
+    if (examStr.indexOf(cases[i]) !== -1) {
+      examStr = examStr.replace(cases[i], '');
+      i = cases.indexOf(cases[i] - 1);
+    }
+  }
+  return examStr.length === 0;
 }
 
 
