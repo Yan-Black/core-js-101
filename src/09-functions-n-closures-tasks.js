@@ -67,7 +67,17 @@ function getPowerFunction(exponent) {
  *   getPolynom()      => null
  */
 function getPolynom() {
-  throw new Error('Not implemented');
+  const coeff = [];
+  // eslint-disable-next-line prefer-rest-params
+  coeff.push(...arguments);
+  return function poly(x) {
+    if (!coeff.length) return null;
+    if (coeff.length === 1) return coeff[0];
+    if (coeff.length > 2) {
+      return (coeff[0] * (x ** 2)) + (coeff[1] * (x ** 1)) + (coeff[2] * (x ** 0));
+    }
+    return (coeff[0] * (x ** 1)) + (coeff[1] * (x ** 0));
+  };
 }
 
 
@@ -159,14 +169,20 @@ function retry(func, attempts) {
 function logger(func, logFunc) {
   return function toLog(arg) {
     const args = [];
-    if (arguments.length > 1) {
-      args.push(...arg);
-    } else {
+    let res;
+    if (arguments.length === 1) {
       args.push(arg);
+      logFunc(`${func.name}(${args}) starts`);
+      res = func.call(this, arg);
+      logFunc(`${func.name}(${args}) ends`);
+    } else {
+      // eslint-disable-next-line prefer-rest-params
+      args.push(...arguments);
+      logFunc(`${func.name}(${JSON.stringify(args[0])},${args[1]}) starts`);
+      res = func.apply(this, [...args]);
+      logFunc(`${func.name}(${JSON.stringify(args[0])},${args[1]}) ends`);
     }
-    logFunc(`${func.name}(${args}) starts`);
-    logFunc(`${func.name}(${args}) ends`);
-    return func.call(this, arg);
+    return res;
   };
 }
 
