@@ -291,8 +291,30 @@ function reverseInteger(num) {
  *   5436468789016589 => false
  *   4916123456789012 => false
  */
-function isCreditCardNumber(/* ccn */) {
-  throw new Error('Not implemented');
+function isCreditCardNumber(ccn) {
+  let numsArr = ccn.toString().split('');
+  const checkDigit = parseInt(numsArr.pop(), 10);
+  numsArr = numsArr.map((n) => parseInt(n, 10));
+  for (let i = numsArr.length; i >= 0; i -= 1) {
+    if (numsArr.length % 2 === 0) {
+      if (i % 2 !== 0) {
+        numsArr.splice(i, 1, numsArr[i] * 2);
+      }
+    } else if (i % 2 === 0) {
+      numsArr.splice(i, 1, numsArr[i] * 2);
+    }
+  }
+  for (let i = numsArr.length; i >= 0; i -= 1) {
+    if (numsArr.length % 2 === 0) {
+      if (numsArr[i] > 9) {
+        numsArr[i] -= 9;
+      }
+    } else if (numsArr[i] > 9) {
+      numsArr[i] -= 9;
+    }
+  }
+  const sumOfDigits = numsArr.reduce((s, c) => s + c, 0);
+  return ((sumOfDigits * 9) % 10) === checkDigit;
 }
 
 /**
@@ -392,8 +414,28 @@ function toNaryString(num, n) {
  *   ['/web/assets/style.css', '/.bin/mocha',  '/read.me'] => '/'
  *   ['/web/favicon.ico', '/web-scripts/dump', '/webalizer/logs'] => '/'
  */
-function getCommonDirectoryPath(/* pathes */) {
-  throw new Error('Not implemented');
+function getCommonDirectoryPath(pathes) {
+  let commonPath = '';
+  let occurences = pathes.map((path) => path.split('/'));
+  occurences = occurences.map((item) => {
+    // eslint-disable-next-line no-param-reassign
+    if (item[0] === '') item[0] = '/';
+    return item;
+  });
+
+  for (let i = 0; i < occurences[0].length; i += 1) {
+    for (let j = 0; j < occurences.length; j += 1) {
+      if (occurences.every((arr) => occurences[j][i] === arr[i])) {
+        if (!commonPath.includes(occurences[j][i])) {
+          commonPath += occurences[j][i];
+          if (occurences[j][i] !== '/') {
+            commonPath += '/';
+          }
+        }
+      }
+    }
+  }
+  return commonPath;
 }
 
 
