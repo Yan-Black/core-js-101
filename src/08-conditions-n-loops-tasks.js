@@ -457,8 +457,18 @@ function getCommonDirectoryPath(pathes) {
  *                         [ 6 ]]
  *
  */
-function getMatrixProduct(/* m1, m2 */) {
-  throw new Error('Not implemented');
+function getMatrixProduct(m1, m2) {
+  const newMatrix = new Array(m1.length);
+  for (let i = 0; i < m1.length; i += 1) {
+    newMatrix[i] = new Array(m2[0].length);
+    for (let j = 0; j < m2[0].length; j += 1) {
+      newMatrix[i][j] = 0;
+      for (let k = 0; k < m1[0].length; k += 1) {
+        newMatrix[i][j] += m1[i][k] * m2[k][j];
+      }
+    }
+  }
+  return newMatrix;
 }
 
 
@@ -492,8 +502,28 @@ function getMatrixProduct(/* m1, m2 */) {
  *    [    ,   ,    ]]
  *
  */
-function evaluateTicTacToePosition(/* position */) {
-  throw new Error('Not implemented');
+function evaluateTicTacToePosition(position) {
+  let winner;
+  for (let i = 0; i < position.length; i += 1) {
+    if (position[i][0] === position[i][1] && position[i][0] === position[i][2]) {
+      // eslint-disable-next-line prefer-destructuring
+      winner = position[i][0];
+    }
+  }
+  for (let i = 0; i < position.length; i += 1) {
+    if (position[0][i] === position[1][i] && position[0][i] === position[2][i]) {
+      winner = position[0][i];
+    }
+  }
+  if (position[0][0] === position[1][1] && position[0][0] === position[2][2]) {
+    // eslint-disable-next-line prefer-destructuring
+    winner = position[0][0];
+  }
+  if (position[0][2] === position[1][1] && position[0][2] === position[2][0]) {
+    // eslint-disable-next-line prefer-destructuring
+    winner = position[0][2];
+  }
+  return winner;
 }
 
 

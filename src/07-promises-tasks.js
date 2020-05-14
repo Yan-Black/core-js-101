@@ -103,8 +103,16 @@ function getFastestPromise(array) {
  *    });
  *
  */
-function chainPromises(/* array, action */) {
-  throw new Error('Not implemented');
+function chainPromises(array, action) {
+  const nums = [];
+  // eslint-disable-next-line consistent-return
+  return Promise.resolve(array.map((p) => p.then((num) => {
+    nums.push(num);
+    if (nums.length === array.length) {
+      const value = nums.reduce(action);
+      return Promise.resolve(value);
+    }
+  }))[array.length - 1]).catch();
 }
 
 module.exports = {
