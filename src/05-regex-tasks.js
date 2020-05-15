@@ -55,7 +55,8 @@ function getRegexForGuid() {
  *
  */
 function getRegexForPitSpot() {
-  throw new Error('Not implemented');
+  const regex = /\S[ipl]/;
+  return regex;
 }
 
 
@@ -79,8 +80,9 @@ function getRegexForPitSpot() {
  *   'PASSW0RD'.match(validator)  => false
  *   'Pa55'.match(validator) => false
  */
-function getPasswordValidator(/* minLength */) {
-  throw new Error('Not implemented');
+function getPasswordValidator(minLength) {
+  const regex = new RegExp(`^[^\\s](?=.{${minLength},}$)(?=[^_]*[A-Z])(?=.*[a-z])(?=.*[0-9])`, '');
+  return regex;
 }
 
 
