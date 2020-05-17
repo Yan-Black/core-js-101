@@ -118,37 +118,153 @@ function fromJSON(proto, json) {
  *  For more examples see unit tests.
  */
 
+function checkOrder(arr) {
+  const classIndexes = [];
+  const attrIndexes = [];
+  const pseudoClassIndexes = [];
+  const pseudoElemIndexes = [];
+  const elemIndexes = [];
+  const idIndexes = [];
+
+  arr.forEach((sel, i) => {
+    if (arr[i].includes('#')) {
+      idIndexes.push(arr.indexOf(arr[i]));
+    }
+    if (!arr[i].match(/[.:#]/)) {
+      elemIndexes.push(arr.indexOf(arr[i]));
+    }
+    if (arr[i].includes('.')) {
+      classIndexes.push(arr.indexOf(arr[i]));
+    }
+    if (arr[i].includes('[')) {
+      attrIndexes.push(arr.indexOf(arr[i]));
+    }
+    if (arr[i][0] === ':' && arr[i][1] !== ':') {
+      pseudoClassIndexes.push(arr.indexOf(arr[i]));
+    }
+    if (arr[i].match(/::.*/g)) {
+      pseudoElemIndexes.push(arr.indexOf(arr[i]));
+    }
+  });
+  if (attrIndexes[0] < classIndexes[0] || pseudoClassIndexes[0] < classIndexes[0]
+  || classIndexes[0] < idIndexes[0] || classIndexes[0] < elemIndexes[0]
+  || pseudoClassIndexes[0] < attrIndexes[0] || pseudoClassIndexes[0] < idIndexes[0]
+  || pseudoElemIndexes[0] < pseudoClassIndexes[0] || pseudoElemIndexes[0] < idIndexes[0]
+  || idIndexes[0] < elemIndexes[0]) {
+    throw new Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+  }
+}
+class MyCssSelector {
+  constructor() {
+    this.selectorsChain = [];
+    this.combinedSelectors = [];
+  }
+
+  element(value) {
+    const selector = value;
+    this.selectorsChain.forEach((sel) => {
+      if (!sel.match(/[.::#]/)) {
+        throw new Error('Element, id and pseudo-element should not occur more then one time inside the selector');
+      }
+    });
+    this.selectorsChain.push(selector);
+    checkOrder(this.selectorsChain);
+    return this;
+  }
+
+  id(value) {
+    const iD = `#${value}`;
+    this.selectorsChain.forEach((sel) => {
+      if (sel.includes('#')) {
+        throw new Error('Element, id and pseudo-element should not occur more then one time inside the selector');
+      }
+    });
+    this.selectorsChain.push(iD);
+    checkOrder(this.selectorsChain);
+    return this;
+  }
+
+  class(value) {
+    const clAss = `.${value}`;
+    this.selectorsChain.push(clAss);
+    checkOrder(this.selectorsChain);
+    return this;
+  }
+
+  attr(value) {
+    const atTr = `[${value}]`;
+    this.selectorsChain.push(atTr);
+    checkOrder(this.selectorsChain);
+    return this;
+  }
+
+  pseudoClass(value) {
+    const pseudoC = `:${value}`;
+    this.selectorsChain.push(pseudoC);
+    checkOrder(this.selectorsChain);
+    return this;
+  }
+
+  pseudoElement(value) {
+    const pseudoE = `::${value}`;
+    this.selectorsChain.forEach((sel) => {
+      if (sel.includes('::')) {
+        throw new Error('Element, id and pseudo-element should not occur more then one time inside the selector');
+      }
+    });
+    this.selectorsChain.push(pseudoE);
+    checkOrder(this.selectorsChain);
+    return this;
+  }
+
+  combine(selector1, combinator, selector2) {
+    this.combinedSelectors.push(selector1.stringify(), combinator, selector2.stringify());
+    return this;
+  }
+
+  stringify() {
+    if (this.combinedSelectors.length !== 0) {
+      return this.combinedSelectors.join(' ');
+    }
+    const result = this.selectorsChain.join('');
+    this.selectorsChain = [];
+    return result;
+  }
+}
+
 const cssSelectorBuilder = {
-  element(/* value */) {
-    throw new Error('Not implemented');
+  element(value) {
+    return new MyCssSelector().element(value);
   },
 
-  id(/* value */) {
-    throw new Error('Not implemented');
+  id(value) {
+    return new MyCssSelector().id(value);
   },
 
-  class(/* value */) {
-    throw new Error('Not implemented');
+  class(value) {
+    return new MyCssSelector().class(value);
   },
 
-  attr(/* value */) {
-    throw new Error('Not implemented');
+  attr(value) {
+    return new MyCssSelector().attr(value);
   },
 
-  pseudoClass(/* value */) {
-    throw new Error('Not implemented');
+  pseudoClass(value) {
+    return new MyCssSelector().pseudoClass(value);
   },
 
-  pseudoElement(/* value */) {
-    throw new Error('Not implemented');
+  pseudoElement(value) {
+    return new MyCssSelector().pseudoElement(value);
   },
 
-  combine(/* selector1, combinator, selector2 */) {
-    throw new Error('Not implemented');
+  combine(selector1, combinator, selector2) {
+    return new MyCssSelector().combine(selector1, combinator, selector2);
+  },
+
+  stringify() {
+    return new MyCssSelector().stringify();
   },
 };
-
-
 module.exports = {
   Rectangle,
   getJSON,
