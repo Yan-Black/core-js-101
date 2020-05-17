@@ -265,6 +265,7 @@ const cssSelectorBuilder = {
     return new MyCssSelector().stringify();
   },
 };
+
 module.exports = {
   Rectangle,
   getJSON,

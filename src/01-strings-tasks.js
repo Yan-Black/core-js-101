@@ -224,7 +224,7 @@ function getRectangleString(width, height) {
         rectangleString += leftBottomAngle;
       } else if (i === height - 1 && j === width - 1) {
         rectangleString += rightBottomAngle;
-      } else if (i === 0 && j !== 0 || i === height - 1 && j !== width - 1) { // eslint-disable-line no-mixed-operators, max-len
+      } else if ((i === 0 && j !== 0) || (i === height - 1 && j !== width - 1)) {
         rectangleString += horizontal;
       } else if (i !== 0 && i !== height - 1 && j === 0) {
         rectangleString += pillow;
