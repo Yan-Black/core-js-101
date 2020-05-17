@@ -462,12 +462,11 @@ function sortCitiesArray(arr) {
  *           [0,0,0,1,0],
  *           [0,0,0,0,1]]
  */
-function getIdentityMatrix(/* n */) {
-  throw new Error('Not implemented');
-  // const nestedArr = new Array(n);
-  // const matrix = new Array(n);
-  // return matrix.fill(nestedArr, 0, n).map((el) => el.fill(0, 0, el.length))
-  //   .map((el, i) => el.map((_, j) => i === j ? el[i] = 1 : el[i] = 0));
+function getIdentityMatrix(n) {
+  const nestedArr = new Array(n);
+  const matrix = new Array(n);
+  return matrix.fill(nestedArr, 0, n).map((el) => el.fill(0, 0, el.length))
+    .map((el, i) => el.map((_, j) => i === j ? el[i] = 1 : el[i] = 0)); // eslint-disable-line no-return-assign, no-confusing-arrow, no-param-reassign, max-len
 }
 
 /**
